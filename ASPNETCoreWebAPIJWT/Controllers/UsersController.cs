@@ -36,7 +36,7 @@ namespace ASPNETCoreWebAPIJWT.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("authenticate")]
-        public IActionResult Authenticate([FromBody] Users usersdata)
+        public IActionResult Authenticate([FromBody] User usersdata)
         {
             var token = _jWTManager.Authenticate(usersdata);
             if (token == null)
@@ -63,6 +63,19 @@ namespace ASPNETCoreWebAPIJWT.Controllers
             return Ok(_jWTManager.GetUserById(payload["user_id"].ToString()));
         }
 
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("newToken")]
+        public IActionResult NewToken(Token token)
+        {
+            if (_jWTManager.ValidateToken(token.RefreshToken) == true)
+            {
+                Token newToken = _jWTManager.NewAccessToken();          
+                return Ok(newToken);
+            }
+            return null;
+        }
 
     }
 }

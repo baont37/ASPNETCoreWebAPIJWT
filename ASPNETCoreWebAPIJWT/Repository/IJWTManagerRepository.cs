@@ -4,7 +4,12 @@ namespace ASPNETCoreWebAPIJWT.Repository
 {
     public interface IJWTManagerRepository
     {
-        Tokens Authenticate(Users users);
-        Users GetUserById(string userId);
+        Token Authenticate(User users);
+        User GetUserById(string userId);
+
+        bool ValidateToken(string authToken);
+
+        Token NewAccessToken();
+
     }
 }

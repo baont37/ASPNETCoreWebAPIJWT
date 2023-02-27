@@ -2,10 +2,10 @@
 
 namespace ASPNETCoreWebAPIJWT.Model
 {
-    public class Users
+    public class User
     {
         [JsonConstructor]
-        public Users(string id, string name, string password)
+        public User(string id, string name, string password)
         {
             Id = id;
             Name = name;
@@ -13,13 +13,13 @@ namespace ASPNETCoreWebAPIJWT.Model
         }
 
         [JsonConstructor]
-        public Users(string name, string password)
+        public User(string name, string password)
         {
             Name = name;
             Password = password;
         }
 
-        public Users() { }
+        public User() { }
 
         public string Id { get; set; }
         public string Name { get; set; }
