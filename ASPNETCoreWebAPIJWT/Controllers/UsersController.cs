@@ -1,7 +1,6 @@
 ﻿using ASPNETCoreWebAPIJWT.Model;
 using ASPNETCoreWebAPIJWT.Repository;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,7 +10,7 @@ namespace ASPNETCoreWebAPIJWT.Controllers
     [Authorize]
     [Route("api/users")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : Controller
     {
         private readonly IJWTManagerRepository _jWTManager;
 
@@ -37,7 +36,7 @@ namespace ASPNETCoreWebAPIJWT.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("authenticate")]
-        public IActionResult Authenticate(Users usersdata)
+        public IActionResult Authenticate([FromBody] Users usersdata)
         {
             var token = _jWTManager.Authenticate(usersdata);
             if (token == null)
@@ -47,5 +46,23 @@ namespace ASPNETCoreWebAPIJWT.Controllers
 
             return Ok(token);
         }
+
+        [HttpGet]
+        [Route("current")]
+        public IActionResult GetCurrent()
+        {
+            var authHeader = this.HttpContext.Request.Headers["Authorization"].ToString();
+            var parts = authHeader.Split(' ');
+            var accessToken = parts[1];
+
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(accessToken);
+            var payload = token.Payload;
+
+
+            return Ok(_jWTManager.GetUserById(payload["user_id"].ToString()));
+        }
+
+
     }
 }
